@@ -3,31 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Midnight Asylum - บันทึกกะดึก</title>
+    <title>MimiCafe & Buffet - ระบบจัดการร้านคาเฟ่</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>⚠️ บันทึกรายงานเวรยาม: แผนกจิตเวชตึก 4</h1>
-            <p class="warning">สถานะ: ห้ามออกจากห้องพักหลังเที่ยงคืนเด็ดขาด</p>
-        </header>
 
-        <main>
-            <section class="log-entry">
-                <h2>บันทึกวันที่: คืนเดือนมืด</h2>
-                <p>ฉันเข้าเวรยามกะดึกคนเดียวในตึก 4 ตอนตี 2 จู่ๆ ก็ได้ยินเสียงลากเก้าอี้ดังมาจากห้องผู้ป่วย 404 ทั้งที่ห้องนั้นถูกปิดตายมาสามปีแล้วตั้งแต่เกิดเหตุการณ์นั้น...</p>
-                <div class="evidence">
-                    <p><strong>วัตถุพยาน:</strong> รอยขีดข่วนบนผนัง และเสียงกระซิบผ่านวิทยุสื่อสาร</p>
-                </div>
-            </section>
-
-            <section class="action-box">
-                <p>คุณจะทำอย่างไรต่อไป?</p>
-                <button onclick="alert('คุณตัดสินใจเดินไปเปิดประตูห้อง 404... มีเสียงหายใจรดต้นคอ!')">เปิดประตูห้อง 404</button>
-                <button onclick="alert('คุณวิ่งหนีลงบันไดหนีไฟ แต่ไฟฉายดันดับลงในความมืดมิด...')">วิ่งหนีลงบันได</button>
-            </section>
-        </main>
+    <!-- เมนูด้านข้างสไตล์มินิมอล -->
+    <div class="sidebar">
+        <div class="logo"><i class="fas fa-coffee"></i> Mimi Cafe</div>
+        <div class="menu-item active" onclick="switchView('dashboard', this)"><i class="fas fa-home"></i> หน้าแรก / ภาพรวม</div>
+        <div class="menu-item" onclick="switchView('cashier', this)"><i class="fas fa-cash-register"></i> แคชเชียร์ (เปิด/ปิดโต๊ะ)</div>
+        <div class="menu-item" onclick="switchView('staff', this)"><i class="fas fa-broom"></i> พนักงาน (เสิร์ฟ/ทำความสะอาด)</div>
+        <div class="menu-item" onclick="switchView('payroll', this)"><i class="fas fa-wallet"></i> คำนวณเบี้ยขยัน & OT</div>
     </div>
+
+    <!-- ส่วนเนื้อหาหลัก -->
+    <div class="main-content">
+        
+        <!-- หน้าที่ 1: แดชบอร์ดภาพรวม -->
+        <div id="dashboard" class="view-section active">
+            <div class="header">
+                <div>
+                    <h1>ยินดีต้อนรับสู่ Mimi Cafe & Buffet 🥐</h1>
+                    <p>ระบบจัดการร้านอาหารและบุฟเฟต์สุดอบอุ่น ควบคุมง่ายในที่เดียว</p>
+                </div>
+                <button class="btn-cozy" onclick="createNewOrder()"><i class="fas fa-plus"></i> เปิดโต๊ะใหม่</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>โต๊ะที่กำลังใช้งาน</h3>
+                    <div class="value" style="color: #bc6c25;">8 / 15</div>
+                </div>
+                <div class="stat-card">
+                    <h3>ยอดขายวันนี้</h3>
+                    <div class="value" style="color: #606c38;">฿12,450</div>
+                </div>
+                <div class="stat-card">
+                    <h3>พนักงานปฏิบัติงาน</h3>
+                    <div class="value" style="color: #283618;">5 คน</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- หน้าที่ 2: แคชเชียร์ (เปิดโต๊ะ/คิดเงิน) -->
+        <div id="cashier" class="view-section">
+            <div class="header">
+                <h1>ระบบแคชเชียร์ (จัดการโต๊ะ & ชำระเงิน)</h1>
+                <button class="btn-cozy" onclick="addTable()"><i class="fas fa-chair"></i> เพิ่มโต๊ะอาหาร</button>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card" style="border-left: 6px solid #dda15e;">
+                    <h3>โต๊ะ T01 (Buffet)</h3>
+                    <p style="margin: 10px 0; color: #666;">สถานะ: กำลังทาน (4 ท่าน)</p>
+                    <button class="btn-sm" onclick="checkoutTable('T01')">คิดเงิน / ปิดโต๊ะ</button>
+                </div>
+                <div class="stat-card" style="border-left: 6px solid #bc6c25;">
+                    <h3>โต๊ะ T02 (Buffet)</h3>
+                    <p style="margin: 10px 0; color: #666;">สถานะ: กำลังทาน (2 ท่าน)</p>
+                    <button class="btn-sm" onclick="checkoutTable('T02')">คิดเงิน / ปิดโต๊ะ</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- หน้าที่ 3: พนักงานเสิร์ฟ & ทำความสะอาด -->
+        <div id="staff" class="view-section">
+            <div class="header">
+                <h1>โซนงานบริการ (พนักงานเสิร์ฟ & ทำความสะอาด)</h1>
+                <button class="btn-cozy" onclick="reportClean()"><i class="fas fa-bell"></i> แจ้งทำความสะอาดโต๊ะ</button>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>🧹 งานทำความสะอาด</h3>
+                    <p style="margin: 10px 0; color: #e76f51; font-weight: 500;">โต๊ะ T03 - รอเคลียร์พื้นที่</p>
+                    <button class="btn-sm" style="background: #e76f51;" onclick="finishClean('T03')">ทำความสะอาดเรียบร้อย</button>
+                </div>
+                <div class="stat-card">
+                    <h3>🍲 งานเสิร์ฟอาหาร</h3>
+                    <p style="margin: 10px 0; color: #2a9d8f; font-weight: 500;">โต๊ะ T01 - สั่งชุดเนื้อเสริม</p>
+                    <button class="btn-sm" style="background: #2a9d8f;" onclick="finishServe('T01')">เสิร์ฟอาหารแล้ว</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- หน้าที่ 4: คำนวณเบี้ยขยัน & OT -->
+        <div id="payroll" class="view-section">
+            <div class="header">
+                <h1>คำนวณเบี้ยขยันและค่าล่วงเวลา (OT)</h1>
+                <button class="btn-cozy" onclick="calculateOT()"><i class="fas fa-calculator"></i> คำนวณยอดรวม</button>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>พนักงาน: คุณสมชาย (เสิร์ฟ)</h3>
+                    <p style="margin: 8px 0; color: #555;">เบี้ยขยันประจำเดือน: <strong>฿1,000</strong></p>
+                    <p style="margin: 8px 0; color: #555;">OT (ชั่วโมงละ 60 บาท): <strong>5 ชม. (฿300)</strong></p>
+                </div>
+                <div class="stat-card">
+                    <h3>พนักงาน: คุณมะลิ (แคชเชียร์)</h3>
+                    <p style="margin: 8px 0; color: #555;">เบี้ยขยันประจำเดือน: <strong>฿1,000</strong></p>
+                    <p style="margin: 8px 0; color: #555;">OT (ชั่วโมงละ 60 บาท): <strong>8 ชม. (฿480)</strong></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
