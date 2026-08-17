@@ -3,113 +3,275 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MimiCafe & Buffet - ระบบจัดการร้านคาเฟ่</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Mimi Cat Cafe & Bakery - Premium Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Prompt', sans-serif; }
+        body { background-color: #fcf6f0; color: #5c3d2e; height: 100vh; display: flex; overflow: hidden; position: relative; }
+
+        /* แบ็คกราวด์ภาพเคลื่อนไหวอลังการสไตล์คาเฟ่แมว */
+        .cafe-bg { position: absolute; width: 100vw; height: 100vh; z-index: -1; background: linear-gradient(135deg, #fcf6f0 0%, #f4e8df 50%, #fef3e2 100%); overflow: hidden; }
+        .orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.5; animation: floatOrb 12s infinite alternate ease-in-out; }
+        .orb-1 { width: 450px; height: 450px; background: #dda15e; top: -100px; left: -100px; }
+        .orb-2 { width: 550px; height: 550px; background: #bc6c25; bottom: -150px; right: -100px; animation-delay: -6s; }
+        .orb-3 { width: 300px; height: 300px; background: #e07a5f; top: 40%; left: 40%; opacity: 0.3; animation-delay: -3s; }
+
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            100% { transform: translate(60px, 80px) scale(1.15) rotate(15deg); }
+        }
+
+        @keyframes floatAnimation {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        /* เมนูด้านข้าง Glassmorphism */
+        .sidebar { width: 280px; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(25px); border-right: 1px solid rgba(221, 161, 94, 0.3); display: flex; flex-direction: column; padding: 35px 25px; z-index: 10; box-shadow: 10px 0 30px rgba(188, 108, 37, 0.05); }
+        .logo { font-size: 1.5rem; font-weight: 700; color: #5c3d2e; margin-bottom: 35px; display: flex; align-items: center; gap: 10px; text-shadow: 0 2px 10px rgba(188, 108, 37, 0.15); }
+        .logo span { animation: floatAnimation 3s ease-in-out infinite; display: inline-block; }
+
+        .menu-item { padding: 15px 20px; color: #8c6d53; text-decoration: none; border-radius: 16px; margin-bottom: 12px; font-weight: 500; display: flex; align-items: center; gap: 15px; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; border: 1px solid transparent; }
+        .menu-item:hover, .menu-item.active { background: linear-gradient(135deg, #dda15e, #bc6c25); color: #fff; transform: translateX(8px); box-shadow: 0 8px 25px rgba(188, 108, 37, 0.35); }
+        .menu-item i { font-size: 1.2rem; }
+
+        /* เครดิตผู้จัดทำด้านล่าง Sidebar */
+        .designer-credit { margin-top: auto; padding-top: 15px; border-top: 1px solid rgba(221, 161, 94, 0.3); font-size: 0.8rem; color: #8c6d53; line-height: 1.5; opacity: 0.9; }
+
+        /* ส่วนเนื้อหาหลัก */
+        .main-content { flex: 1; padding: 45px; overflow-y: auto; z-index: 1; display: flex; flex-direction: column; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 35px; animation: slideDown 0.6s ease-out; }
+        .header h1 { font-size: 2.2rem; font-weight: 700; color: #5c3d2e; letter-spacing: -0.5px; }
+        .header p { color: #8c6d53; font-size: 0.95rem; margin-top: 5px; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ปุ่มกดดีไซน์พรีเมียม */
+        .btn-cozy { background: linear-gradient(135deg, #bc6c25, #dda15e); color: white; border: none; padding: 14px 28px; border-radius: 50px; font-weight: 600; cursor: pointer; box-shadow: 0 8px 25px rgba(188, 108, 37, 0.4); transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 10px; }
+        .btn-cozy:hover { transform: scale(1.05) translateY(-3px); box-shadow: 0 12px 30px rgba(188, 108, 37, 0.6); }
+
+        .btn-sm { background: #dda15e; color: white; border: none; padding: 9px 18px; border-radius: 25px; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: 0.3s; margin-top: 12px; box-shadow: 0 4px 12px rgba(221, 161, 94, 0.3); }
+        .btn-sm:hover { background: #bc6c25; transform: translateY(-2px); }
+
+        /* ระบบสลับหน้าแบบอนิเมชันนุ่มนวล */
+        .view-section { display: none; animation: fadeInScale 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .view-section.active { display: block; }
+        
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.97) translateY(15px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* กริดการ์ดข้อมูล */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-bottom: 30px; }
+        .stat-card { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(221, 161, 94, 0.25); backdrop-filter: blur(20px); padding: 25px; border-radius: 24px; position: relative; overflow: hidden; transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 10px 30px rgba(188, 108, 37, 0.05); }
+        .stat-card:hover { transform: translateY(-8px); border-color: #bc6c25; box-shadow: 0 20px 40px rgba(188, 108, 37, 0.15), 0 0 20px rgba(221, 161, 94, 0.2); }
+        .stat-card h3 { color: #8c6d53; font-size: 1rem; margin-bottom: 10px; font-weight: 500; }
+        .stat-card .value { font-size: 2.5rem; font-weight: 700; color: #5c3d2e; }
+        .stat-card::after { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: linear-gradient(to bottom, #bc6c25, #dda15e); }
+
+        /* เมนูแคตตาล็อกคาเฟ่แมว */
+        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .menu-card { background: rgba(255, 255, 255, 0.9); border: 2px solid #f0dec9; border-radius: 20px; padding: 20px; text-align: center; transition: all 0.4s ease; box-shadow: 0 10px 25px rgba(188, 108, 37, 0.05); }
+        .menu-card:hover { transform: translateY(-8px) scale(1.02); border-color: #bc6c25; box-shadow: 0 15px 35px rgba(188, 108, 37, 0.15); }
+        .menu-card .icon { font-size: 2.8rem; margin-bottom: 10px; animation: floatAnimation 3s ease-in-out infinite; display: inline-block; }
+        .menu-card h4 { color: #5c3d2e; font-size: 1.1rem; margin-bottom: 5px; }
+        .menu-card p { color: #8c6d53; font-size: 0.85rem; margin-bottom: 12px; }
+        .menu-card .price { font-weight: 700; color: #bc6c25; font-size: 1.1rem; }
+    </style>
 </head>
 <body>
 
-    <!-- เมนูด้านข้างสไตล์มินิมอล -->
-    <div class="sidebar">
-        <div class="logo"><i class="fas fa-coffee"></i> Mimi Cafe</div>
-        <div class="menu-item active" onclick="switchView('dashboard', this)"><i class="fas fa-home"></i> หน้าแรก / ภาพรวม</div>
-        <div class="menu-item" onclick="switchView('cashier', this)"><i class="fas fa-cash-register"></i> แคชเชียร์ (เปิด/ปิดโต๊ะ)</div>
-        <div class="menu-item" onclick="switchView('staff', this)"><i class="fas fa-broom"></i> พนักงาน (เสิร์ฟ/ทำความสะอาด)</div>
-        <div class="menu-item" onclick="switchView('payroll', this)"><i class="fas fa-wallet"></i> คำนวณเบี้ยขยัน & OT</div>
+    <div class="cafe-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
     </div>
 
-    <!-- ส่วนเนื้อหาหลัก -->
+    <!-- เมนูด้านข้าง -->
+    <div class="sidebar">
+        <div class="logo"><span>🐱 ☕</span> Mimi Cat Cafe</div>
+        <div class="menu-item active" onclick="switchView('dashboard', this)"><i class="fas fa-home"></i> หน้าแรก / ภาพรวม</div>
+        <div class="menu-item" onclick="switchView('menu', this)"><i class="fas fa-coffee"></i> เมนู (นมสด/ชาเขียว/เค้ก)</div>
+        <div class="menu-item" onclick="switchView('cashier', this)"><i class="fas fa-cash-register"></i> แคชเชียร์ (เปิด/ปิดโต๊ะ)</div>
+        <div class="menu-item" onclick="switchView('staff', this)"><i class="fas fa-concierge-bell"></i> พนักงานบริการ</div>
+        <div class="menu-item" onclick="switchView('payroll', this)"><i class="fas fa-coins"></i> เบี้ยขยัน & OT</div>
+
+        <!-- เครดิตผู้จัดทำ -->
+        <div class="designer-credit">
+            <strong>ผู้ออกแบบ :</strong><br>
+            ณัฏฐ์ยาน์ ก้องเสียง 006
+        </div>
+    </div>
+
+    <!-- เนื้อหาหลัก -->
     <div class="main-content">
         
         <!-- หน้าที่ 1: แดชบอร์ดภาพรวม -->
         <div id="dashboard" class="view-section active">
             <div class="header">
                 <div>
-                    <h1>ยินดีต้อนรับสู่ Mimi Cafe & Buffet 🥐</h1>
-                    <p>ระบบจัดการร้านอาหารและบุฟเฟต์สุดอบอุ่น ควบคุมง่ายในที่เดียว</p>
+                    <h1>ยินดีต้อนรับสู่ Mimi Cat Cafe & Bakery 🐾</h1>
+                    <p>คาเฟ่แมวสุดอบอุ่น เคล้าคลานความอร่อยพร้อมระบบจัดการสุดพรีเมียม</p>
                 </div>
-                <button class="btn-cozy" onclick="createNewOrder()"><i class="fas fa-plus"></i> เปิดโต๊ะใหม่</button>
+                <button class="btn-cozy" onclick="createNewOrder()"><i class="fas fa-plus-circle"></i> เปิดโต๊ะใหม่</button>
             </div>
 
             <div class="stats-grid">
                 <div class="stat-card">
-                    <h3>โต๊ะที่กำลังใช้งาน</h3>
+                    <h3>โต๊ะแมวที่กำลังใช้งาน</h3>
                     <div class="value" style="color: #bc6c25;">8 / 15</div>
                 </div>
                 <div class="stat-card">
-                    <h3>ยอดขายวันนี้</h3>
-                    <div class="value" style="color: #606c38;">฿12,450</div>
+                    <h3>ยอดขายสุทธิวันนี้</h3>
+                    <div class="value" style="color: #606c38;">฿15,850</div>
                 </div>
                 <div class="stat-card">
-                    <h3>พนักงานปฏิบัติงาน</h3>
-                    <div class="value" style="color: #283618;">5 คน</div>
+                    <h3>น้องแมวรับแขกวันนี้</h3>
+                    <div class="value" style="color: #e07a5f;">12 ตัว</div>
                 </div>
             </div>
         </div>
 
-        <!-- หน้าที่ 2: แคชเชียร์ (เปิดโต๊ะ/คิดเงิน) -->
+        <!-- หน้าที่ 2: เมนูคาเฟ่แมว (นมสด ชาเขียว เค้ก) -->
+        <div id="menu" class="view-section">
+            <div class="header">
+                <h1>เมนูเครื่องดื่มและเบเกอรี่สุดพิเศษ 🍰🍵</h1>
+                <p>คัดสรรวัตถุดิบพรีเมียมเพื่อคุณและน้องแมว</p>
+            </div>
+            <div class="menu-grid">
+                <div class="menu-card">
+                    <div class="icon">🥛</div>
+                    <h4>นมสดฮอกไกโดละมุน</h4>
+                    <p>นมสดแท้ 100% หอมมัน กลมกล่อม ละมุนลิ้น</p>
+                    <div class="price">฿65</div>
+                </div>
+                <div class="menu-card">
+                    <div class="icon">🍵</div>
+                    <h4>มัทฉะลาเต้พรีเมียม</h4>
+                    <p>ชาเขียวแท้จากญี่ปุ่น เข้มข้น หอมกลิ่นมัทฉะ</p>
+                    <div class="price">฿85</div>
+                </div>
+                <div class="menu-card">
+                    <div class="icon">🍰</div>
+                    <h4>เค้กนมสดสตรอว์เบอร์รี</h4>
+                    <p>เค้กเนื้อนุ่มฟู ครีมสดละมุนและสตรอว์เบอร์รีสดฉ่ำ</p>
+                    <div class="price">฿95</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- หน้าที่ 3: แคชเชียร์ -->
         <div id="cashier" class="view-section">
             <div class="header">
                 <h1>ระบบแคชเชียร์ (จัดการโต๊ะ & ชำระเงิน)</h1>
                 <button class="btn-cozy" onclick="addTable()"><i class="fas fa-chair"></i> เพิ่มโต๊ะอาหาร</button>
             </div>
             <div class="stats-grid">
-                <div class="stat-card" style="border-left: 6px solid #dda15e;">
-                    <h3>โต๊ะ T01 (Buffet)</h3>
-                    <p style="margin: 10px 0; color: #666;">สถานะ: กำลังทาน (4 ท่าน)</p>
+                <div class="stat-card" style="border-left-color: #dda15e;">
+                    <h3>โซนแมวเลีย T01</h3>
+                    <p style="margin: 12px 0; color: #666;">สถานะ: กำลังทาน & เล่นกับน้องแมว (4 ท่าน)</p>
                     <button class="btn-sm" onclick="checkoutTable('T01')">คิดเงิน / ปิดโต๊ะ</button>
                 </div>
-                <div class="stat-card" style="border-left: 6px solid #bc6c25;">
-                    <h3>โต๊ะ T02 (Buffet)</h3>
-                    <p style="margin: 10px 0; color: #666;">สถานะ: กำลังทาน (2 ท่าน)</p>
+                <div class="stat-card" style="border-left-color: #bc6c25;">
+                    <h3>โซนกระจก T02</h3>
+                    <p style="margin: 12px 0; color: #666;">สถานะ: กำลังทาน (2 ท่าน)</p>
                     <button class="btn-sm" onclick="checkoutTable('T02')">คิดเงิน / ปิดโต๊ะ</button>
                 </div>
             </div>
         </div>
 
-        <!-- หน้าที่ 3: พนักงานเสิร์ฟ & ทำความสะอาด -->
+        <!-- หน้าที่ 4: พนักงาน -->
         <div id="staff" class="view-section">
             <div class="header">
-                <h1>โซนงานบริการ (พนักงานเสิร์ฟ & ทำความสะอาด)</h1>
-                <button class="btn-cozy" onclick="reportClean()"><i class="fas fa-bell"></i> แจ้งทำความสะอาดโต๊ะ</button>
+                <h1>โซนงานบริการ & ดูแลความสะอาด</h1>
+                <button class="btn-cozy" onclick="reportClean()"><i class="fas fa-bell"></i> แจ้งทำความสะอาด</button>
             </div>
             <div class="stats-grid">
-                <div class="stat-card">
+                <div class="stat-card" style="border-left-color: #e07a5f;">
                     <h3>🧹 งานทำความสะอาด</h3>
-                    <p style="margin: 10px 0; color: #e76f51; font-weight: 500;">โต๊ะ T03 - รอเคลียร์พื้นที่</p>
-                    <button class="btn-sm" style="background: #e76f51;" onclick="finishClean('T03')">ทำความสะอาดเรียบร้อย</button>
+                    <p style="margin: 12px 0; color: #d90429; font-weight: 500;">โต๊ะ T03 - รอเคลียร์พื้นที่</p>
+                    <button class="btn-sm" style="background: #e07a5f;" onclick="finishClean('T03')">ทำความสะอาดเรียบร้อย</button>
                 </div>
-                <div class="stat-card">
-                    <h3>🍲 งานเสิร์ฟอาหาร</h3>
-                    <p style="margin: 10px 0; color: #2a9d8f; font-weight: 500;">โต๊ะ T01 - สั่งชุดเนื้อเสริม</p>
-                    <button class="btn-sm" style="background: #2a9d8f;" onclick="finishServe('T01')">เสิร์ฟอาหารแล้ว</button>
+                <div class="stat-card" style="border-left-color: #38b000;">
+                    <h3>🍲 งานเสิร์ฟเมนู</h3>
+                    <p style="margin: 12px 0; color: #38b000; font-weight: 500;">โต๊ะ T01 - สั่งมัทฉะลาเต้เพิ่ม</p>
+                    <button class="btn-sm" style="background: #38b000;" onclick="finishServe('T01')">เสิร์ฟอาหารแล้ว</button>
                 </div>
             </div>
         </div>
 
-        <!-- หน้าที่ 4: คำนวณเบี้ยขยัน & OT -->
+        <!-- หน้าที่ 5: เบี้ยขยัน & OT -->
         <div id="payroll" class="view-section">
             <div class="header">
                 <h1>คำนวณเบี้ยขยันและค่าล่วงเวลา (OT)</h1>
-                <button class="btn-cozy" onclick="calculateOT()"><i class="fas fa-calculator"></i> คำนวณยอดรวม</button>
+                <button class="btn-cozy" onclick="calculateOT()"><i class="fas fa-calculator"></i> คำนวณยอดรวมทั้งหมด</button>
             </div>
             <div class="stats-grid">
                 <div class="stat-card">
-                    <h3>พนักงาน: คุณสมชาย (เสิร์ฟ)</h3>
-                    <p style="margin: 8px 0; color: #555;">เบี้ยขยันประจำเดือน: <strong>฿1,000</strong></p>
-                    <p style="margin: 8px 0; color: #555;">OT (ชั่วโมงละ 60 บาท): <strong>5 ชม. (฿300)</strong></p>
+                    <h3>พนักงาน: คุณสมชาย (บริการ)</h3>
+                    <p style="margin: 10px 0; color: #555;">เบี้ยขยันประจำเดือน: <strong>฿1,000</strong></p>
+                    <p style="margin: 10px 0; color: #555;">OT (ชั่วโมงละ 60 บาท): <strong>5 ชม. (฿300)</strong></p>
                 </div>
                 <div class="stat-card">
                     <h3>พนักงาน: คุณมะลิ (แคชเชียร์)</h3>
-                    <p style="margin: 8px 0; color: #555;">เบี้ยขยันประจำเดือน: <strong>฿1,000</strong></p>
-                    <p style="margin: 8px 0; color: #555;">OT (ชั่วโมงละ 60 บาท): <strong>8 ชม. (฿480)</strong></p>
+                    <p style="margin: 10px 0; color: #555;">เบี้ยขยันประจำเดือน: <strong>฿1,000</strong></p>
+                    <p style="margin: 10px 0; color: #555;">OT (ชั่วโมงละ 60 บาท): <strong>8 ชม. (฿480)</strong></p>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        function switchView(viewId, element) {
+            const views = document.querySelectorAll('.view-section');
+            views.forEach(v => v.classList.remove('active'));
+            
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach(m => m.classList.remove('active'));
+            
+            document.getElementById(viewId).classList.add('active');
+            element.classList.add('active');
+        }
+
+        function createNewOrder() {
+            const tableNo = prompt("กรอกหมายเลขโต๊ะที่ต้องการเปิดใหม่ (เช่น T04):");
+            if (tableNo) {
+                alert(`เปิดโต๊ะ ${tableNo} สำเร็จ เตรียมต้อนรับลูกค้าและน้องแมวกันเลย!`);
+            }
+        }
+
+        function checkoutTable(tableId) {
+            if (confirm(`ยืนยันการคิดเงินและปิดโต๊ะ ${tableId} ใช่หรือไม่?`)) {
+                alert(`ปิดโต๊ะ ${tableId} เรียบร้อย ส่งข้อมูลให้พนักงานทำความสะอาดต่อไป`);
+            }
+        }
+
+        function addTable() {
+            alert("เพิ่มโต๊ะอาหารใหม่เข้าระบบสำเร็จ!");
+        }
+
+        function reportClean() {
+            alert("ส่งสัญญาณแจ้งเตือนพนักงานทำความสะอาดประจำโซนเรียบร้อย!");
+        }
+
+        function finishClean(tableId) {
+            alert(`โต๊ะ ${tableId} ทำความสะอาดเสร็จสิ้น พร้อมรับลูกค้าใหม่แล้วค่ะ!`);
+        }
+
+        function finishServe(tableId) {
+            alert(`อัปเดตสถานะเสิร์ฟเมนูให้โต๊ะ ${tableId} สำเร็จ`);
+        }
+
+        function calculateOT() {
+            alert("ระบบประมวลผลเบี้ยขยันและค่าล่วงเวลา (OT) รอบนี้เรียบร้อยแล้ว!");
+        }
+    </script>
 </body>
 </html>
